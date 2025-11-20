@@ -186,19 +186,7 @@ export default function Bikes() {
 
   const formatCurrency = (value: string | null) => {
     if (!value) return 'Consultar';
-    
-    // Se já está formatado (contém vírgula ou ponto como separador decimal), retorna como está
-    if (value.includes(',') || value.includes('R$')) {
-      return value.includes('R$') ? value : `R$ ${value}`;
-    }
-    
-    // Caso contrário, tenta converter
-    const num = parseFloat(value);
-    if (isNaN(num)) return value;
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(num);
+    return value.includes('R$') ? value : `R$ ${value}`;
   };
 
   const copyPublicUrl = () => {
