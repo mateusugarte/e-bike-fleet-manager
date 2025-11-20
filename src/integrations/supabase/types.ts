@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           aguenta: string | null
           autonomia: string | null
+          created_at: string | null
           foto_1: string | null
           foto_2: string | null
           foto_3: string | null
@@ -26,12 +27,14 @@ export type Database = {
           obs: string | null
           precisa_CNH: string | null
           status: string | null
+          updated_at: string | null
           valor: string | null
           vídeo: string | null
         }
         Insert: {
           aguenta?: string | null
           autonomia?: string | null
+          created_at?: string | null
           foto_1?: string | null
           foto_2?: string | null
           foto_3?: string | null
@@ -40,12 +43,14 @@ export type Database = {
           obs?: string | null
           precisa_CNH?: string | null
           status?: string | null
+          updated_at?: string | null
           valor?: string | null
           vídeo?: string | null
         }
         Update: {
           aguenta?: string | null
           autonomia?: string | null
+          created_at?: string | null
           foto_1?: string | null
           foto_2?: string | null
           foto_3?: string | null
@@ -54,6 +59,7 @@ export type Database = {
           obs?: string | null
           precisa_CNH?: string | null
           status?: string | null
+          updated_at?: string | null
           valor?: string | null
           vídeo?: string | null
         }
@@ -69,6 +75,7 @@ export type Database = {
           pausar_ia: string | null
           phone: string
           resumo: string | null
+          updated_at: string | null
         }
         Insert: {
           criado_em: string
@@ -79,6 +86,7 @@ export type Database = {
           pausar_ia?: string | null
           phone: string
           resumo?: string | null
+          updated_at?: string | null
         }
         Update: {
           criado_em?: string
@@ -89,6 +97,7 @@ export type Database = {
           pausar_ia?: string | null
           phone?: string
           resumo?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
