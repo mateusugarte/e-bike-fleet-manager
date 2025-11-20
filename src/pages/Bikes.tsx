@@ -55,6 +55,13 @@ export default function Bikes() {
   useEffect(() => {
     if (statusFilter === 'all') {
       setFilteredBikes(bikes);
+    } else if (statusFilter === 'disponivel') {
+      // Aceita variações de "Disponível"
+      setFilteredBikes(bikes.filter(b => 
+        b.status?.toLowerCase().includes('dispon') || 
+        b.status?.toLowerCase() === 'disponível' ||
+        b.status?.toLowerCase() === 'dísponivel'
+      ));
     } else {
       setFilteredBikes(bikes.filter(b => b.status === statusFilter));
     }
@@ -169,7 +176,14 @@ export default function Bikes() {
   };
 
   const formatCurrency = (value: string | null) => {
-    if (!value) return 'N/A';
+    if (!value) return 'Consultar';
+    
+    // Se já está formatado (contém vírgula ou ponto como separador decimal), retorna como está
+    if (value.includes(',') || value.includes('R$')) {
+      return value.includes('R$') ? value : `R$ ${value}`;
+    }
+    
+    // Caso contrário, tenta converter
     const num = parseFloat(value);
     if (isNaN(num)) return value;
     return new Intl.NumberFormat('pt-BR', {
@@ -213,7 +227,7 @@ export default function Bikes() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todas</SelectItem>
-            <SelectItem value="Disponível">Disponível</SelectItem>
+            <SelectItem value="disponivel">Disponível</SelectItem>
             <SelectItem value="Vendida">Vendida</SelectItem>
           </SelectContent>
         </Select>
@@ -240,18 +254,27 @@ export default function Bikes() {
               </div>
             )}
             <CardContent className="p-4 space-y-2">
-              <div className="flex justify-between items-start">
-                <h3 className="font-semibold text-lg">{bike.modelo}</h3>
-                <Badge variant={bike.status === 'Disponível' ? 'default' : 'secondary'}>
-                  {bike.status}
+              <div className="flex justify-between items-start gap-2">
+                <h3 className="font-semibold text-lg line-clamp-2">{bike.modelo}</h3>
+                <Badge 
+                  variant={
+                    bike.status?.toLowerCase().includes('dispon') || 
+                    bike.status?.toLowerCase() === 'disponível' 
+                      ? 'default' 
+                      : 'secondary'
+                  }
+                  className="shrink-0"
+                >
+                  {bike.status?.toLowerCase().includes('dispon') ? 'Disponível' : bike.status}
                 </Badge>
               </div>
               <p className="text-2xl font-bold text-primary">
                 {formatCurrency(bike.valor)}
               </p>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>Autonomia: {bike.autonomia || 'N/A'}</p>
-                <p>Capacidade: {bike.aguenta || 'N/A'}</p>
+                <p>🔋 Autonomia: {bike.autonomia || 'N/A'}</p>
+                <p>⚖️ Capacidade: {bike.aguenta || 'N/A'}</p>
+                <p>🪪 CNH: {bike.precisa_CNH || 'N/A'}</p>
               </div>
             </CardContent>
           </Card>
