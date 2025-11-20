@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           aguenta: string | null
           autonomia: string | null
+          Bateria: string | null
           created_at: string | null
           created_by: string | null
           foto_1: string | null
@@ -36,6 +37,7 @@ export type Database = {
         Insert: {
           aguenta?: string | null
           autonomia?: string | null
+          Bateria?: string | null
           created_at?: string | null
           created_by?: string | null
           foto_1?: string | null
@@ -54,6 +56,7 @@ export type Database = {
         Update: {
           aguenta?: string | null
           autonomia?: string | null
+          Bateria?: string | null
           created_at?: string | null
           created_by?: string | null
           foto_1?: string | null
@@ -71,43 +74,85 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          content: string | null
+          embedding: string | null
+          id: number
+          metadata: Json | null
+        }
+        Insert: {
+          content?: string | null
+          embedding?: string | null
+          id?: number
+          metadata?: Json | null
+        }
+        Update: {
+          content?: string | null
+          embedding?: string | null
+          id?: number
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
       "Gestao de contatos": {
         Row: {
+          cpf: string | null
           created_by: string | null
           criado_em: string
+          data_nascimento: string | null
+          estado_civil: string | null
           id: string
           intenção: string | null
           modelo_interesse: string | null
           Name_Contact: string | null
+          nome_completo: string | null
           pausar_ia: string | null
           phone: string
+          profissão: string | null
+          renda_mensal: string | null
           resumo: string | null
+          ultima_mensagem: string | null
           updated_at: string | null
           updated_by: string | null
         }
         Insert: {
+          cpf?: string | null
           created_by?: string | null
           criado_em: string
+          data_nascimento?: string | null
+          estado_civil?: string | null
           id?: string
           intenção?: string | null
           modelo_interesse?: string | null
           Name_Contact?: string | null
+          nome_completo?: string | null
           pausar_ia?: string | null
           phone: string
+          profissão?: string | null
+          renda_mensal?: string | null
           resumo?: string | null
+          ultima_mensagem?: string | null
           updated_at?: string | null
           updated_by?: string | null
         }
         Update: {
+          cpf?: string | null
           created_by?: string | null
           criado_em?: string
+          data_nascimento?: string | null
+          estado_civil?: string | null
           id?: string
           intenção?: string | null
           modelo_interesse?: string | null
           Name_Contact?: string | null
+          nome_completo?: string | null
           pausar_ia?: string | null
           phone?: string
+          profissão?: string | null
+          renda_mensal?: string | null
           resumo?: string | null
+          ultima_mensagem?: string | null
           updated_at?: string | null
           updated_by?: string | null
         }
@@ -173,6 +218,15 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      match_documents: {
+        Args: { filter?: Json; match_count?: number; query_embedding: string }
+        Returns: {
+          content: string
+          id: number
+          metadata: Json
+          similarity: number
+        }[]
       }
     }
     Enums: {

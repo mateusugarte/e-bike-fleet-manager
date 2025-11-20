@@ -25,6 +25,7 @@ interface Bike {
   foto_3: string | null;
   vídeo: string | null;
   status: string | null;
+  Bateria: string | null;
 }
 
 export default function Bikes() {
@@ -45,6 +46,10 @@ export default function Bikes() {
     precisa_CNH: 'não',
     obs: '',
     foto_1: '',
+    foto_2: '',
+    foto_3: '',
+    vídeo: '',
+    Bateria: '',
     status: 'Disponível',
   });
 
@@ -120,6 +125,10 @@ export default function Bikes() {
         precisa_CNH: 'não',
         obs: '',
         foto_1: '',
+        foto_2: '',
+        foto_3: '',
+        vídeo: '',
+        Bateria: '',
         status: 'Disponível',
       });
       fetchBikes();
@@ -272,9 +281,10 @@ export default function Bikes() {
                 {formatCurrency(bike.valor)}
               </p>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>🔋 Autonomia: {bike.autonomia || 'N/A'}</p>
-                <p>⚖️ Capacidade: {bike.aguenta || 'N/A'}</p>
-                <p>🪪 CNH: {bike.precisa_CNH || 'N/A'}</p>
+                <p>Autonomia: {bike.autonomia || 'N/A'}</p>
+                <p>Capacidade: {bike.aguenta || 'N/A'}</p>
+                <p>Bateria: {bike.Bateria || 'N/A'}</p>
+                <p>CNH: {bike.precisa_CNH || 'N/A'}</p>
               </div>
             </CardContent>
           </Card>
@@ -294,6 +304,10 @@ export default function Bikes() {
             precisa_CNH: 'não',
             obs: '',
             foto_1: '',
+            foto_2: '',
+            foto_3: '',
+            vídeo: '',
+            Bateria: '',
             status: 'Disponível',
           });
         }
@@ -345,6 +359,15 @@ export default function Bikes() {
               </div>
 
               <div className="space-y-2">
+                <Label>Bateria</Label>
+                <Input
+                  value={formData.Bateria}
+                  onChange={(e) => setFormData({ ...formData, Bateria: e.target.value })}
+                  placeholder="Ex: 48V 20Ah"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label>Status</Label>
                 <Select
                   value={formData.status}
@@ -373,10 +396,37 @@ export default function Bikes() {
             </div>
 
             <div className="space-y-2">
-              <Label>URL da Foto</Label>
+              <Label>URL da Foto 1</Label>
               <Input
                 value={formData.foto_1}
                 onChange={(e) => setFormData({ ...formData, foto_1: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL da Foto 2</Label>
+              <Input
+                value={formData.foto_2}
+                onChange={(e) => setFormData({ ...formData, foto_2: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL da Foto 3</Label>
+              <Input
+                value={formData.foto_3}
+                onChange={(e) => setFormData({ ...formData, foto_3: e.target.value })}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL do Vídeo</Label>
+              <Input
+                value={formData.vídeo}
+                onChange={(e) => setFormData({ ...formData, vídeo: e.target.value })}
                 placeholder="https://..."
               />
             </div>
@@ -444,6 +494,10 @@ export default function Bikes() {
                   <p className="text-sm mt-1">{selectedBike.aguenta}</p>
                 </div>
                 <div>
+                  <Label>Bateria</Label>
+                  <p className="text-sm mt-1">{selectedBike.Bateria || 'N/A'}</p>
+                </div>
+                <div>
                   <Label>Status</Label>
                   <Badge className="mt-1" variant={selectedBike.status === 'Disponível' ? 'default' : 'secondary'}>
                     {selectedBike.status}
@@ -479,6 +533,10 @@ export default function Bikes() {
                     precisa_CNH: selectedBike.precisa_CNH || 'não',
                     obs: selectedBike.obs || '',
                     foto_1: selectedBike.foto_1 || '',
+                    foto_2: selectedBike.foto_2 || '',
+                    foto_3: selectedBike.foto_3 || '',
+                    vídeo: selectedBike.vídeo || '',
+                    Bateria: selectedBike.Bateria || '',
                     status: selectedBike.status || 'Disponível',
                   });
                   setIsEditMode(true);
