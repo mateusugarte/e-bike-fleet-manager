@@ -19,6 +19,7 @@ export type Database = {
           aguenta: string | null
           autonomia: string | null
           created_at: string | null
+          created_by: string | null
           foto_1: string | null
           foto_2: string | null
           foto_3: string | null
@@ -28,6 +29,7 @@ export type Database = {
           precisa_CNH: string | null
           status: string | null
           updated_at: string | null
+          updated_by: string | null
           valor: string | null
           vídeo: string | null
         }
@@ -35,6 +37,7 @@ export type Database = {
           aguenta?: string | null
           autonomia?: string | null
           created_at?: string | null
+          created_by?: string | null
           foto_1?: string | null
           foto_2?: string | null
           foto_3?: string | null
@@ -44,6 +47,7 @@ export type Database = {
           precisa_CNH?: string | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           valor?: string | null
           vídeo?: string | null
         }
@@ -51,6 +55,7 @@ export type Database = {
           aguenta?: string | null
           autonomia?: string | null
           created_at?: string | null
+          created_by?: string | null
           foto_1?: string | null
           foto_2?: string | null
           foto_3?: string | null
@@ -60,6 +65,7 @@ export type Database = {
           precisa_CNH?: string | null
           status?: string | null
           updated_at?: string | null
+          updated_by?: string | null
           valor?: string | null
           vídeo?: string | null
         }
@@ -67,6 +73,7 @@ export type Database = {
       }
       "Gestao de contatos": {
         Row: {
+          created_by: string | null
           criado_em: string
           id: string
           intenção: string | null
@@ -76,8 +83,10 @@ export type Database = {
           phone: string
           resumo: string | null
           updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
+          created_by?: string | null
           criado_em: string
           id?: string
           intenção?: string | null
@@ -87,8 +96,10 @@ export type Database = {
           phone: string
           resumo?: string | null
           updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
+          created_by?: string | null
           criado_em?: string
           id?: string
           intenção?: string | null
@@ -98,6 +109,7 @@ export type Database = {
           phone?: string
           resumo?: string | null
           updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -128,15 +140,43 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      assign_admin_role: { Args: { user_email: string }; Returns: undefined }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -263,6 +303,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
