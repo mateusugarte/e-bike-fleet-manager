@@ -58,23 +58,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    // SEGURANÇA: Signup público desabilitado
+    // Apenas usuários cadastrados no Supabase podem acessar o sistema
+    const error = {
+      message: "Cadastro público desabilitado. Entre em contato com o administrador.",
+      status: 403,
+    };
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-      },
+    toast({
+      title: "Cadastro não permitido",
+      description: error.message,
+      variant: "destructive",
     });
-
-    if (error) {
-      toast({
-        title: "Erro ao criar conta",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
 
     return { error };
   };
