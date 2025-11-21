@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Bike, ShoppingCart, LogOut, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, Users, Bike, ShoppingCart, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import { RippleButton } from '@/components/ui/multi-type-ripple-buttons';
 
 interface LayoutProps {
@@ -14,7 +13,6 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -45,17 +43,6 @@ export function Layout({ children }: LayoutProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <RippleButton
-              variant="ghost"
-              onClick={toggleTheme}
-              className="rounded-full w-10 h-10 p-0 flex items-center justify-center"
-            >
-              {theme === 'light' ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
-            </RippleButton>
             <RippleButton
               variant="ghost"
               onClick={handleSignOut}

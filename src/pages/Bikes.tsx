@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Filter, Edit, Trash2, Link as LinkIcon } from 'lucide-react';
+import { Plus, Filter, Edit, Trash2 } from 'lucide-react';
 
 interface Bike {
   id: string;
@@ -203,16 +203,10 @@ export default function Bikes() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-3xl font-bold">Gestão de Bikes</h1>
         
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={copyPublicUrl}>
-            <LinkIcon className="h-4 w-4 mr-2" />
-            Gerar Catálogo
-          </Button>
-          <Button onClick={() => setIsAddMode(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Adicionar Bike
-          </Button>
-        </div>
+        <Button onClick={() => setIsAddMode(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Adicionar Bike
+        </Button>
       </div>
 
       {/* Filter */}
