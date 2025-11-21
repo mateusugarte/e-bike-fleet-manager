@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          changed_at: string | null
+          id: string
+          ip_address: string | null
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          changed_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id: string
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          changed_at?: string | null
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       Catálogo_bikes: {
         Row: {
           aguenta: string | null
@@ -287,6 +326,13 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      bike_status: "Disponível" | "Vendida" | "Manutenção"
+      lead_stage:
+        | "Contato Inicial"
+        | "Envio do Catálogo"
+        | "Perguntas"
+        | "Qualificado"
+      pausar_ia_status: "Sim" | "Não"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -415,6 +461,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      bike_status: ["Disponível", "Vendida", "Manutenção"],
+      lead_stage: [
+        "Contato Inicial",
+        "Envio do Catálogo",
+        "Perguntas",
+        "Qualificado",
+      ],
+      pausar_ia_status: ["Sim", "Não"],
     },
   },
 } as const
