@@ -24,6 +24,9 @@ export default function Dashboard() {
   const [totalLeads, setTotalLeads] = useState(0);
   const [totalContacts, setTotalContacts] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [avgTicket, setAvgTicket] = useState(0);
+  const [salesConversionRate, setSalesConversionRate] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -138,13 +141,36 @@ export default function Dashboard() {
       }
       setLeadsByDay(last7Days);
 
-      // Fetch sales (bikes with status "Vendida")
-      const { data: bikes } = await supabase
-        .from('Catálogo_bikes')
+      // Fetch sales from vendas table
+      const { data: allSales } = await supabase
+        .from('vendas')
         .select('*')
-        .eq('status', 'Vendida');
-      
-      setTotalSales(bikes?.length || 0);
+        .order('created_at', { ascending: false });
+
+      if (allSales) {
+        // Filter sales by date range
+        const filteredSales = allSales.filter(sale => 
+          isDateInRange(sale.data_venda, startDate, endDate)
+        );
+        
+        setTotalSales(filteredSales.length);
+
+        // Calculate revenue
+        const revenue = filteredSales.reduce((acc, sale) => {
+          const valor = parseFloat(sale.valor_final.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+          return acc + valor;
+        }, 0);
+        setTotalRevenue(revenue);
+
+        // Calculate average ticket
+        const ticket = filteredSales.length > 0 ? revenue / filteredSales.length : 0;
+        setAvgTicket(ticket);
+
+        // Calculate sales conversion rate (qualified leads to sales)
+        const qualifiedLeads = filteredContacts.filter(c => c.intenção === 'Qualificado').length;
+        const convRate = qualifiedLeads > 0 ? (filteredSales.length / qualifiedLeads) * 100 : 0;
+        setSalesConversionRate(convRate);
+      }
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -222,7 +248,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Total Sales */}
+      {/* Total Sales */}
         <Card className="border-chart-4/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -233,7 +259,61 @@ export default function Dashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-chart-4">{totalSales}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              Bikes vendidas no total
+              Total no período
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sales Revenue Metrics */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="border-success/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Receita Total
+            </CardTitle>
+            <TrendingUp className="h-4 w-4 text-success" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-success">
+              R$ {totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Soma das vendas no período
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-chart-3/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Ticket Médio
+            </CardTitle>
+            <TrendingUp className="h-4 w-4 text-chart-3" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-chart-3">
+              R$ {avgTicket.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Valor médio por venda
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-chart-5/20">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Taxa de Conversão
+            </CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-chart-5" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-chart-5">
+              {salesConversionRate.toFixed(1)}%
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Leads → Vendas
             </p>
           </CardContent>
         </Card>

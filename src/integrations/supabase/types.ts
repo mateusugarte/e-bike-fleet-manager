@@ -206,6 +206,62 @@ export type Database = {
         }
         Relationships: []
       }
+      vendas: {
+        Row: {
+          bike_id: string
+          bike_modelo: string
+          cliente_nome: string
+          cliente_telefone: string
+          created_at: string
+          created_by: string | null
+          data_venda: string
+          financiado: boolean
+          id: string
+          updated_at: string
+          updated_by: string | null
+          valor_entrada: string | null
+          valor_final: string
+        }
+        Insert: {
+          bike_id: string
+          bike_modelo: string
+          cliente_nome: string
+          cliente_telefone: string
+          created_at?: string
+          created_by?: string | null
+          data_venda: string
+          financiado?: boolean
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_entrada?: string | null
+          valor_final: string
+        }
+        Update: {
+          bike_id?: string
+          bike_modelo?: string
+          cliente_nome?: string
+          cliente_telefone?: string
+          created_at?: string
+          created_by?: string | null
+          data_venda?: string
+          financiado?: boolean
+          id?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_entrada?: string | null
+          valor_final?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_bike_id_fkey"
+            columns: ["bike_id"]
+            isOneToOne: false
+            referencedRelation: "Catálogo_bikes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
