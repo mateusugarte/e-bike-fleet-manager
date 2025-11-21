@@ -4,6 +4,7 @@ import { LayoutDashboard, Users, Bike, ShoppingCart, LogOut, Moon, Sun } from 'l
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { RippleButton } from '@/components/ui/multi-type-ripple-buttons';
 
 interface LayoutProps {
   children: ReactNode;
@@ -44,26 +45,24 @@ export function Layout({ children }: LayoutProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
+            <RippleButton
               variant="ghost"
-              size="icon"
               onClick={toggleTheme}
-              className="rounded-full"
+              className="rounded-full w-10 h-10 p-0 flex items-center justify-center"
             >
               {theme === 'light' ? (
                 <Moon className="h-5 w-5" />
               ) : (
                 <Sun className="h-5 w-5" />
               )}
-            </Button>
-            <Button
+            </RippleButton>
+            <RippleButton
               variant="ghost"
-              size="icon"
               onClick={handleSignOut}
-              className="rounded-full"
+              className="rounded-full w-10 h-10 p-0 flex items-center justify-center text-destructive hover:text-destructive"
             >
               <LogOut className="h-5 w-5" />
-            </Button>
+            </RippleButton>
           </div>
         </div>
       </header>
@@ -78,13 +77,24 @@ export function Layout({ children }: LayoutProps) {
               
               return (
                 <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    className="gap-2 whitespace-nowrap"
-                  >
-                    <Icon className="h-4 w-4" />
-                    <span className="hidden sm:inline">{item.label}</span>
-                  </Button>
+                  {isActive ? (
+                    <RippleButton
+                      variant="hover"
+                      className="gap-2 whitespace-nowrap bg-primary text-primary-foreground"
+                      hoverBaseColor="hsl(var(--primary))"
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </RippleButton>
+                  ) : (
+                    <RippleButton
+                      variant="ghost"
+                      className="gap-2 whitespace-nowrap"
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </RippleButton>
+                  )}
                 </Link>
               );
             })}

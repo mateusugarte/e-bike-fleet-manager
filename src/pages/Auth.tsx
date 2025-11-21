@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
+import { RippleButton } from '@/components/ui/multi-type-ripple-buttons';
 
 export default function Auth() {
   const [email, setEmail] = useState('');
@@ -80,10 +80,16 @@ export default function Auth() {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <RippleButton 
+                type="submit" 
+                variant="hover"
+                className="w-full bg-primary text-primary-foreground font-medium hover:opacity-90"
+                disabled={loading}
+                hoverBaseColor="hsl(var(--primary))"
+              >
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Entrar
-              </Button>
+              </RippleButton>
             </form>
             <p className="text-xs text-center text-muted-foreground mt-4">
               Apenas usuários autorizados podem acessar o sistema.<br/>

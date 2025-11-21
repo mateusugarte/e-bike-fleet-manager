@@ -58,6 +58,8 @@ All colors MUST be HSL.
     --chart-3: 270 65% 55%;
     --chart-4: 38 92% 55%;
     --chart-5: 0 75% 55%;
+
+    --button-ripple-color: rgba(14, 14, 14, 0.3);
   }
 
   .dark {
@@ -109,6 +111,8 @@ All colors MUST be HSL.
     --chart-3: 270 70% 65%;
     --chart-4: 38 92% 65%;
     --chart-5: 0 75% 65%;
+
+    --button-ripple-color: rgba(251, 251, 251, 0.5);
   }
 }
 
