@@ -27,7 +27,7 @@ interface Contact {
 const columns = [
   { id: 'Contato Inicial', title: 'Contato Inicial', color: 'bg-slate-500' },
   { id: 'Envio do Catálogo', title: 'Envio do Catálogo', color: 'bg-blue-500' },
-  { id: 'Perguntas e Qualificado', title: 'Perguntas e Qualificado', color: 'bg-amber-500' },
+  { id: 'Perguntas', title: 'Perguntas', color: 'bg-amber-500' },
   { id: 'Qualificado', title: 'Qualificado', color: 'bg-success' },
 ];
 
@@ -119,6 +119,11 @@ export default function CRM() {
 
   const formatDate = (dateString: string) => {
     try {
+      // Handle dd-mm-yyyy format
+      if (dateString.includes('-') && dateString.length === 10) {
+        const [day, month, year] = dateString.split('-');
+        return `${day}/${month}/${year}`;
+      }
       return format(new Date(dateString), 'dd/MM/yyyy', { locale: ptBR });
     } catch {
       return dateString;
