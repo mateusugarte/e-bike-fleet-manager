@@ -121,14 +121,18 @@ export default function Vendas() {
       const today = new Date();
       const dataVenda = format(today, 'dd-MM-yyyy');
 
+      // Limpar valores removendo pontos e substituindo vírgula por ponto
+      const valorFinalLimpo = formData.valor_final.replace(/\./g, '').replace(',', '.');
+      const valorEntradaLimpo = formData.valor_entrada ? formData.valor_entrada.replace(/\./g, '').replace(',', '.') : null;
+
       const { error } = await supabase.from('vendas').insert({
         cliente_nome: formData.cliente_nome,
         cliente_telefone: formData.cliente_telefone,
         bike_id: selectedBike.id,
         bike_modelo: selectedBike.modelo,
         financiado: formData.financiado,
-        valor_entrada: formData.financiado ? formData.valor_entrada : null,
-        valor_final: formData.valor_final,
+        valor_entrada: valorEntradaLimpo,
+        valor_final: valorFinalLimpo,
         data_venda: dataVenda,
       });
 
@@ -194,7 +198,7 @@ export default function Vendas() {
     const total = filtered.length;
     
     const totalRevenue = filtered.reduce((acc, venda) => {
-      const valor = parseFloat(venda.valor_final.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+      const valor = parseFloat(venda.valor_final) || 0;
       return acc + valor;
     }, 0);
     
@@ -499,7 +503,7 @@ export default function Vendas() {
                         )}
                       </TableCell>
                       <TableCell className="font-semibold">
-                        R$ {venda.valor_final}
+                        R$ {parseFloat(venda.valor_final).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
                   ))}
