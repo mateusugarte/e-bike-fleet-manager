@@ -137,6 +137,7 @@ export type Database = {
       "Gestao de contatos": {
         Row: {
           cpf: string | null
+          created_at: string | null
           created_by: string | null
           criado_em: string
           data_nascimento: string | null
@@ -157,6 +158,7 @@ export type Database = {
         }
         Insert: {
           cpf?: string | null
+          created_at?: string | null
           created_by?: string | null
           criado_em: string
           data_nascimento?: string | null
@@ -177,6 +179,7 @@ export type Database = {
         }
         Update: {
           cpf?: string | null
+          created_at?: string | null
           created_by?: string | null
           criado_em?: string
           data_nascimento?: string | null
