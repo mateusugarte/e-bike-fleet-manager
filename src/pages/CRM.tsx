@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, PauseCircle, PlayCircle, Phone, User, FileText, Calendar, Briefcase, DollarSign, Heart, CreditCard } from 'lucide-react';
-import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners, DragStartEvent } from '@dnd-kit/core';
+import { Plus, Pencil, PauseCircle, PlayCircle, Phone, User, FileText, Calendar, Briefcase, DollarSign, Heart, CreditCard, Trash2 } from 'lucide-react';
+import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners, DragStartEvent, useDraggable, useDroppable } from '@dnd-kit/core';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -204,6 +204,35 @@ export default function CRM() {
       toast({
         title: 'Erro',
         description: 'Não foi possível atualizar o status da IA',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDelete = async (contact: Contact) => {
+    if (!confirm(`Tem certeza que deseja excluir o contato ${contact.Name_Contact || contact.nome_completo}?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('Gestao de contatos')
+        .delete()
+        .eq('id', contact.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Sucesso',
+        description: 'Contato excluído com sucesso',
+      });
+
+      fetchContacts();
+    } catch (error) {
+      console.error('Erro ao excluir contato:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível excluir o contato',
         variant: 'destructive',
       });
     }
@@ -414,6 +443,7 @@ export default function CRM() {
                 contacts={getContactsByStage(stage.id)}
                 onEdit={handleEdit}
                 onTogglePausar={togglePausarIA}
+                onDelete={handleDelete}
               />
             ))}
           </div>
@@ -424,6 +454,7 @@ export default function CRM() {
                 contact={activeContact}
                 onEdit={handleEdit}
                 onTogglePausar={togglePausarIA}
+                onDelete={handleDelete}
                 isDragging
               />
             )}
@@ -546,11 +577,16 @@ interface DroppableColumnProps {
   contacts: Contact[];
   onEdit: (contact: Contact) => void;
   onTogglePausar: (contact: Contact) => void;
+  onDelete: (contact: Contact) => void;
 }
 
-function DroppableColumn({ stage, contacts, onEdit, onTogglePausar }: DroppableColumnProps) {
+function DroppableColumn({ stage, contacts, onEdit, onTogglePausar, onDelete }: DroppableColumnProps) {
+  const { setNodeRef } = useDroppable({
+    id: stage.id,
+  });
+
   return (
-    <div id={stage.id} className="space-y-4">
+    <div ref={setNodeRef} className="space-y-4">
       <div className={`${stage.color} text-white p-4 rounded-lg`}>
         <h2 className="text-lg font-semibold">{stage.label}</h2>
         <p className="text-sm opacity-90">{contacts.length} contatos</p>
@@ -563,6 +599,7 @@ function DroppableColumn({ stage, contacts, onEdit, onTogglePausar }: DroppableC
             contact={contact}
             onEdit={onEdit}
             onTogglePausar={onTogglePausar}
+            onDelete={onDelete}
           />
         ))}
       </div>
@@ -574,17 +611,28 @@ interface ContactCardProps {
   contact: Contact;
   onEdit: (contact: Contact) => void;
   onTogglePausar: (contact: Contact) => void;
+  onDelete: (contact: Contact) => void;
   isDragging?: boolean;
 }
 
-function ContactCard({ contact, onEdit, onTogglePausar, isDragging }: ContactCardProps) {
+function ContactCard({ contact, onEdit, onTogglePausar, onDelete, isDragging }: ContactCardProps) {
   const isPaused = contact.pausar_ia === 'Sim';
+
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: contact.id,
+  });
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
 
   return (
     <Card 
-      id={contact.id}
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
       className={`cursor-move hover:shadow-md transition-shadow ${isDragging ? 'opacity-50 rotate-3' : ''}`}
-      style={{ touchAction: 'none' }}
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
@@ -623,6 +671,17 @@ function ContactCard({ contact, onEdit, onTogglePausar, isDragging }: ContactCar
               ) : (
                 <PauseCircle className="h-3 w-3 text-warning" />
               )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(contact);
+              }}
+              className="h-8 w-8 p-0"
+            >
+              <Trash2 className="h-3 w-3 text-destructive" />
             </Button>
           </div>
         </div>
