@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, PauseCircle, PlayCircle, Phone, User, FileText, Calendar, Briefcase, DollarSign, Heart, CreditCard, Trash2 } from 'lucide-react';
+import { Plus, Pencil, PauseCircle, PlayCircle, Phone, User, FileText, Calendar as CalendarIcon, Briefcase, DollarSign, Heart, CreditCard, Trash2, CalendarDays } from 'lucide-react';
 import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors, closestCorners, DragStartEvent, useDraggable, useDroppable } from '@dnd-kit/core';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -43,6 +43,7 @@ export default function CRM() {
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
+  const [dateFilter, setDateFilter] = useState<'hoje' | '7dias' | '30dias'>('hoje');
   const { toast } = useToast();
 
   const sensors = useSensors(
@@ -294,8 +295,38 @@ export default function CRM() {
     }
   };
 
+  const parseDate = (dateStr: string): Date => {
+    // Formato: DD-MM-YYYY
+    const [day, month, year] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const filterContactsByDate = (contactList: Contact[]) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return contactList.filter(contact => {
+      const contactDate = parseDate(contact.criado_em);
+      contactDate.setHours(0, 0, 0, 0);
+
+      if (dateFilter === 'hoje') {
+        return contactDate.getTime() === today.getTime();
+      } else if (dateFilter === '7dias') {
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        return contactDate >= sevenDaysAgo && contactDate <= today;
+      } else if (dateFilter === '30dias') {
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        return contactDate >= thirtyDaysAgo && contactDate <= today;
+      }
+      return true;
+    });
+  };
+
   const getContactsByStage = (stage: string) => {
-    return contacts.filter(c => c.intenção === stage);
+    const filteredByDate = filterContactsByDate(contacts);
+    return filteredByDate.filter(c => c.intenção === stage);
   };
 
   const activeContact = contacts.find(c => c.id === activeId);
@@ -422,6 +453,32 @@ export default function CRM() {
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div className="flex flex-wrap gap-2 items-center">
+        <CalendarDays className="h-5 w-5 text-muted-foreground" />
+        <span className="text-sm font-medium text-muted-foreground">Filtrar por período:</span>
+        <Button
+          variant={dateFilter === 'hoje' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setDateFilter('hoje')}
+        >
+          Hoje
+        </Button>
+        <Button
+          variant={dateFilter === '7dias' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setDateFilter('7dias')}
+        >
+          Últimos 7 dias
+        </Button>
+        <Button
+          variant={dateFilter === '30dias' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setDateFilter('30dias')}
+        >
+          Últimos 30 dias
+        </Button>
       </div>
 
       {loading ? (
@@ -710,7 +767,7 @@ function ContactCard({ contact, onEdit, onTogglePausar, onDelete, isDragging }: 
 
         {contact.data_nascimento && (
           <div className="flex items-start gap-2">
-            <Calendar className="h-3 w-3 mt-0.5 text-muted-foreground flex-shrink-0" />
+            <CalendarIcon className="h-3 w-3 mt-0.5 text-muted-foreground flex-shrink-0" />
             <span className="text-muted-foreground">{contact.data_nascimento}</span>
           </div>
         )}
